@@ -1,0 +1,56 @@
+.contact-page{background:var(--paper)}
+.contact-shell{width:min(1280px,calc(100% - 112px));margin-inline:auto}
+.contact-page-hero{padding:76px 0 84px;border-bottom:1px solid var(--line)}
+.contact-page-hero-grid{display:block;margin-top:48px}
+.contact-page-hero h1{font-family:var(--display);font-size:clamp(62px,7vw,104px);font-weight:400;line-height:1.18;letter-spacing:-3px;margin:0}
+.contact-page-hero h1 span{color:var(--blue);position:relative}
+.contact-page-hero h1 span:after{content:"";position:absolute;left:0;right:-5px;bottom:-7px;height:10px;background:var(--yellow);z-index:-1;transform:rotate(-1deg)}
+.contact-page-body{padding:94px 0 110px}
+.contact-page-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,.52fr);gap:clamp(70px,9vw,140px);align-items:start}
+.contact-directory{max-width:720px}
+.contact-name-row{display:flex;align-items:center;gap:30px;margin-bottom:30px}
+.contact-directory h2{font-family:var(--display);font-size:clamp(38px,4vw,56px);font-weight:400;line-height:1.2;margin:0}
+.contact-resume{min-height:43px;padding:10px 19px;font-size:13px}
+.contact-directory address{font-style:normal;border-top:1px solid var(--ink)}
+.contact-directory address>div{padding:20px 0;border-bottom:1px solid var(--line)}
+.contact-directory address span{display:block;font-size:12px;letter-spacing:2px;color:var(--muted);margin-bottom:6px}
+.contact-directory address a,.contact-directory address p{font-size:16px;line-height:1.75}
+.contact-value-row{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.contact-directory address i{font-style:normal;color:var(--blue);margin-left:7px;transition:transform .2s;display:inline-block}
+.contact-directory address a:hover{color:var(--blue)}
+.contact-directory address a:hover i{transform:translate(3px,-3px)}
+.copy-control{flex:0 0 auto;padding:7px 11px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:12px}.copy-control:hover,.copy-control:focus-visible{border-color:var(--blue);color:var(--blue)}
+.copy-control.is-copied{border-color:var(--blue);background:var(--blue);color:#fff}
+.contact-qr-switcher{justify-self:end;width:min(100%,360px)}
+.contact-qr-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:9px;padding:5px;background:rgb(255 255 255 / 58%);border:1px solid var(--line)}
+.contact-qr-tabs button{position:relative;min-height:40px;padding:9px 12px;border:0;background:transparent;color:var(--muted);font-size:13px;letter-spacing:.08em;transition:background .2s ease,color .2s ease}
+.contact-qr-tabs button::after{content:"";position:absolute;right:18px;bottom:5px;left:18px;height:2px;background:transparent;transform:scaleX(.35);transition:background .2s ease,transform .2s ease}
+.contact-qr-tabs button:hover,.contact-qr-tabs button:focus-visible,.contact-qr-tabs button[aria-selected="true"]{background:#fff;color:var(--blue)}
+.contact-qr-tabs button[aria-selected="true"]::after{background:var(--blue);transform:scaleX(1)}
+.contact-qr{width:100%;margin:0;padding:12px 12px 10px;background:#fff;border:1px solid var(--line);box-shadow:0 12px 30px rgb(36 35 31 / 8%)}
+.contact-qr-frame{position:relative;display:grid;width:100%;aspect-ratio:1/1.335;overflow:hidden;background:#fff}
+.contact-qr-panel{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transform:translateX(18px);transition:opacity .22s ease,transform .22s ease}
+.contact-qr-panel.is-active{opacity:1;transform:translateX(0)}
+.contact-qr-panel img{display:block;width:100%;height:100%;object-fit:contain}
+.contact-qr figcaption{padding:10px 2px 2px;color:var(--muted);font-size:12px;letter-spacing:1px;text-align:center}
+.contact-qr figcaption span{display:block}
+.contact-qr figcaption small{display:block;margin-top:4px;color:#9a958c;font-size:10px;letter-spacing:.08em}
+.contact-page-footer{display:block;margin-top:0;border-top:1px solid var(--ink);padding:34px 0 46px}
+.contact-page-footer>.contact-shell{display:flex;justify-content:space-between;align-items:center}
+.contact-page-footer>.contact-shell>a:last-child{font-size:13px}
+.contact-page-footer>.contact-shell>a:last-child:hover{color:var(--blue)}
+@media(max-width:900px){.contact-shell{width:calc(100% - 64px)}.contact-page-grid{grid-template-columns:1fr;gap:60px}.contact-directory{max-width:720px}.contact-qr-switcher{justify-self:start;width:min(70%,340px)}}
+@media(max-width:760px){.contact-shell{width:calc(100% - 40px)}.contact-page-hero{padding:48px 0 60px}.contact-page-hero-grid{margin-top:28px}.contact-page-hero h1{font-size:clamp(49px,13vw,72px);letter-spacing:-2px}.contact-page-body{padding:65px 0 75px}.contact-name-row{gap:20px}.contact-value-row{align-items:flex-start;gap:14px}.contact-directory address a,.contact-directory address p{overflow-wrap:anywhere}.contact-qr-switcher{width:min(82%,340px)}.contact-page-footer>.contact-shell{align-items:flex-start}.contact-page-footer .footer-name span{display:none}}
+@media(max-width:390px){.contact-shell{width:calc(100% - 32px)}.contact-page-hero h1{font-size:47px}}
+.contact-page-hero h1 .contact-hero-line{display:inline-block;white-space:nowrap}
+@media(max-width:760px){.contact-page-hero h1{font-size:clamp(34px,10vw,72px)}}
+
+/* Match the homepage's “从碎片，到整体” title scale. */
+.contact-page-hero h1{font-size:clamp(70px,7.1vw,106px)}
+@media(max-width:760px){.contact-page-hero h1{font-size:clamp(65px,14vw,98px)}}
+@media(max-width:390px){.contact-page-hero h1{font-size:64px}}
+
+/* A quieter, more breathable shared title scale for the three inner pages. */
+.contact-page-hero h1{font-size:clamp(56px,5.8vw,88px);line-height:1.32}
+@media(max-width:760px){.contact-page-hero h1{font-size:clamp(42px,10vw,64px);line-height:1.34}}
+@media(prefers-reduced-motion:reduce){.contact-qr-tabs button,.contact-qr-tabs button::after,.contact-qr-panel{transition:none}}
