@@ -1,5 +1,14 @@
 const filterButtons=[...document.querySelectorAll('[data-filter]')];
 const projects=[...document.querySelectorAll('[data-category]')];
+document.querySelectorAll('.directory-entry').forEach(entry=>{
+ function loadPreview(){
+  if(!matchMedia('(min-width: 761px)').matches)return;
+  const image=entry.querySelector('img[data-preview-src]');
+  if(image){image.src=image.dataset.previewSrc;delete image.dataset.previewSrc;}
+ }
+ entry.addEventListener('pointerenter',loadPreview);
+ entry.addEventListener('focusin',loadPreview);
+});
 filterButtons.forEach(button=>button.addEventListener('click',()=>{
  const category=button.dataset.filter;
  filterButtons.forEach(item=>{const active=item===button;item.classList.toggle('is-active',active);item.setAttribute('aria-pressed',String(active));});

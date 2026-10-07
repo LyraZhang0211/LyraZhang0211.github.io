@@ -32,7 +32,7 @@ posts.forEach(post => {
   main.appendChild(copy);
   if (media) {
     main.appendChild(media);
-    if (media.querySelectorAll(':scope > img').length > 1) media.classList.add('media-pair');
+    if (media.querySelectorAll(':scope > img, :scope > picture.responsive-media > img').length > 1) media.classList.add('media-pair');
   }
 
   const work = copy.querySelector(':scope > .core-work');

@@ -11,6 +11,21 @@ const optimizedMedia = path => {
   return value.replace(/\.mp4(?=\?|$)/i, '.web.mp4');
 };
 
+function mobileAsset(kind, path) {
+  const value = String(path ?? '');
+  const queryIndex = value.indexOf('?');
+  const clean = queryIndex < 0 ? value : value.slice(0, queryIndex);
+  const variant = window.PORTFOLIO_MEDIA?.[kind]?.[clean];
+  return variant ? variant + (queryIndex < 0 ? '' : value.slice(queryIndex)) : value;
+}
+
+function imageMarkup(path, alt, className = '') {
+  const original = optimizedImage(path);
+  const mobile = mobileAsset('images', original);
+  const image = `<img ${className ? `class="${escapeHTML(className)}" ` : ''}src="${escapeHTML(original)}" alt="${escapeHTML(alt)}" loading="lazy" decoding="async">`;
+  return mobile === original ? image : `<picture class="responsive-media"><source media="(max-width: 760px)" srcset="${escapeHTML(mobile)}">${image}</picture>`;
+}
+
 function linkMarkup(item, body, className = '') {
   if (!item.href) return `<div class="${className} is-static">${body}</div>`;
   const label = item.linkType === 'pdf' ? '查看 PDF' : item.linkType === 'media' ? '播放作品' : '查看作品';
@@ -24,7 +39,7 @@ function linkMarkup(item, body, className = '') {
 function coverMarkup(work, categoryLabel) {
   let body;
   if (work.cover) {
-    body = `<img src="${escapeHTML(optimizedImage(work.cover))}" alt="${escapeHTML(work.title)}封面" loading="lazy" decoding="async">`;
+    body = imageMarkup(work.cover, `${work.title}封面`);
   } else if (work.preview) {
     body = `<object data="${escapeHTML(work.preview)}#page=1&toolbar=0&navpanes=0" type="application/pdf" tabindex="-1" aria-hidden="true"><span>${escapeHTML(work.title)}</span></object>`;
   } else {
@@ -40,7 +55,7 @@ function itemMarkup(item) {
 }
 
 function galleryItemMarkup(item) {
-  const image = `<img src="${escapeHTML(optimizedImage(item.cover))}" alt="${escapeHTML(item.title)}作品预览" loading="lazy" decoding="async">`;
+  const image = imageMarkup(item.cover, `${item.title}作品预览`);
   return `<article class="gallery-item">${linkMarkup(item, image, 'gallery-visual')}<div class="gallery-caption"><h4>${escapeHTML(item.title)}</h4></div></article>`;
 }
 
@@ -48,7 +63,7 @@ function broadcastProgramMarkup(work) {
   const programTitle = work.title.replace(/^北京广电《|》$/g, '');
   const summary = work.summary ? `<p class="audio-program-summary">${escapeHTML(work.summary)}</p>` : '';
   const role = work.role ? `<p class="audio-program-role">${escapeHTML(work.role)}</p>` : '';
-  const logo = work.id === 'audio-health' ? '<img class="audio-program-logo" src="我的作品/音频作品/康养E站-cutout.webp" alt="FM100.6 京津冀之声 康养E站" loading="lazy" decoding="async">' : '';
+  const logo = work.id === 'audio-health' ? imageMarkup('我的作品/音频作品/康养E站-cutout.webp', 'FM100.6 京津冀之声 康养E站', 'audio-program-logo') : '';
   return `<section class="audio-program" id="${escapeHTML(work.id)}" aria-labelledby="${escapeHTML(work.id)}-title">
     <header class="audio-program-heading"><div class="audio-program-title-line"><h3 id="${escapeHTML(work.id)}-title">${escapeHTML(programTitle)}</h3>${logo}</div><div class="audio-program-meta">${summary}${role}</div></header>
     <div class="series-list">${work.items.map(itemMarkup).join('')}</div>
@@ -60,7 +75,7 @@ function broadcastFeatureMarkup(works) {
   const intern = works.find(work => work.id === 'audio-intern');
   if (!health || !intern) return works.map(work => workMarkup(work, '音频作品')).join('');
   return `<article class="work-entry audio-broadcast-feature">
-    <header class="audio-broadcast-title"><h3>北京广电</h3><img src="我的作品/音频作品/BRTV-cutout.webp" alt="BRTV" loading="lazy" decoding="async"></header>
+    <header class="audio-broadcast-title"><h3>北京广电</h3>${imageMarkup('我的作品/音频作品/BRTV-cutout.webp', 'BRTV')}</header>
     <p class="audio-broadcast-summary">实习期间，主要参与《京津冀康养E站》和《我是实习生》两档广播节目的策划。</p>
     <div class="audio-program-columns">${broadcastProgramMarkup(health)}${broadcastProgramMarkup(intern)}</div>
   </article>`;
@@ -78,15 +93,15 @@ function workMarkup(work, categoryLabel) {
   }
   if (work.layout === 'media-series') {
     const mainImage = work.cover
-      ? `<div class="media-series-visual is-static ${work.coverStyle === 'logo' ? 'is-logo' : ''}"><img src="${escapeHTML(optimizedImage(work.cover))}" alt="${escapeHTML(work.title)}台标" loading="lazy" decoding="async"></div>`
+      ? `<div class="media-series-visual is-static ${work.coverStyle === 'logo' ? 'is-logo' : ''}">${imageMarkup(work.cover, `${work.title}台标`)}</div>`
       : '';
     const additionalImages = (work.additionalCovers || [])
-      .map(item => `<div class="media-series-visual is-static ${item.style ? `is-${escapeHTML(item.style)}` : ''}"><img src="${escapeHTML(optimizedImage(item.src))}" alt="${escapeHTML(item.alt || work.title)}" loading="lazy" decoding="async"></div>`)
+      .map(item => `<div class="media-series-visual is-static ${item.style ? `is-${escapeHTML(item.style)}` : ''}">${imageMarkup(item.src, item.alt || work.title)}</div>`)
       .join('');
     const itemImages = work.items
       .filter(item => item.cover)
       .map(item => {
-        const image = `<img src="${escapeHTML(optimizedImage(item.cover))}" alt="${escapeHTML(item.title)}作品封面" loading="lazy" decoding="async">`;
+        const image = imageMarkup(item.cover, `${item.title}作品封面`);
         return linkMarkup(item, image, 'media-series-visual');
       })
       .join('');
@@ -159,12 +174,25 @@ function openWorkViewer(link) {
   viewerStage.replaceChildren();
 
   if (type === 'media') {
+    const lightweight = matchMedia('(max-width: 760px)').matches || navigator.connection?.saveData;
+    const playbackHref = lightweight ? mobileAsset('videos', link.getAttribute('href')) : link.getAttribute('href');
     const video = document.createElement('video');
-    video.src = href;
+    video.src = playbackHref;
+    viewerExternal.href = playbackHref;
     video.controls = true;
     video.autoplay = true;
     video.playsInline = true;
     video.preload = 'metadata';
+    // Only fetch a video after the visitor explicitly opens that work.
+    // If a derivative is missing during deployment, fall back to the desktop file.
+    if (playbackHref !== link.getAttribute('href')) {
+      video.addEventListener('error', () => {
+        if (viewer.hidden || !viewerStage.contains(video)) return;
+        video.src = href;
+        viewerExternal.href = href;
+        video.load();
+      }, {once: true});
+    }
     video.setAttribute('aria-label', title);
     viewerStage.append(video);
   } else {
@@ -187,7 +215,11 @@ function openWorkViewer(link) {
 function closeWorkViewer() {
   if (viewer.hidden) return;
   const video = viewerStage.querySelector('video');
-  if (video) video.pause();
+  if (video) {
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
+  }
   viewer.hidden = true;
   viewerStage.replaceChildren();
   document.body.classList.remove('is-viewing-work');
