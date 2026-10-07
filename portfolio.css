@@ -24,6 +24,11 @@ body{font-family:var(--sans);font-size:16px;line-height:1.7}.wordmark strong,nav
 .hero-description-line-two{display:inline-block;margin-left:-2em}
 @media(max-width:760px){.collage-label{top:26%}.note-fragment p{font-size:22px}.hero-divider{margin-top:4px}}
 @media(max-width:390px){.note-fragment p{font-size:18px}}
+/* Keep the compact note over the photo's lower-right caption. */
+.note-fragment{top:64%;right:2%;width:38%;aspect-ratio:5/4;display:flex;align-items:center;justify-content:center;text-align:center;z-index:2}
+@media(max-width:1100px){.note-fragment{top:60%;width:40%}}
+@media(max-width:760px){.note-fragment{top:58%;right:4%;width:44%}}
+@media(max-width:390px){.note-fragment{top:55%}}
 nav a[aria-current="page"]:after{transform:scaleX(1)}
 .contact-section .contact-grid h2>span{display:inline-block;white-space:nowrap}
 @media(min-width:1101px){.contact-section .contact-grid{grid-template-columns:minmax(0,1.9fr) minmax(300px,.72fr);gap:88px}.contact-section .contact-letter{padding-left:64px}}
@@ -293,8 +298,7 @@ nav a[aria-current="page"]:after{transform:scaleX(1)}
  .directory-copy small{font-size:16px;margin-top:7px}
  .directory-entry:before{inset:0 -8px}
  .directory-arrow{font-size:21px}
- .directory-preview{position:static;grid-column:2/4;width:min(100%,240px);aspect-ratio:4/3;margin-top:17px;opacity:1;box-shadow:0 7px 16px rgb(36 35 31 / 10%);transform:none}
- .directory-entry:hover .directory-preview,.directory-entry:focus-visible .directory-preview{transform:none}
+ .directory-preview{display:none}
  .directory-entry--commercial{border-bottom:1px solid #c9c5b9}
 }
 

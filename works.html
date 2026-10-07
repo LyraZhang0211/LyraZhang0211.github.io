@@ -12,10 +12,10 @@
   <title>我的作品｜张悦</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/fonts/xiangcui/result.css?v=20260916-04">
-  <link rel="stylesheet" href="portfolio.css?v=20260916-04">
-  <link rel="stylesheet" href="works.css?v=20260916-04">
+  <link rel="stylesheet" href="portfolio.css?v=20260929-01">
+  <link rel="stylesheet" href="works.css?v=20261006-03">
   <script src="works-data.js?v=20260916-04" defer></script>
-  <script src="works-page.js?v=20260916-04" defer></script>
+  <script src="works-page.js?v=20261006-05" defer></script>
 </head>
 <body class="works-page" id="top">
   <a class="skip" href="#works-main">跳至作品列表</a>
@@ -42,5 +42,14 @@
   </main>
 
   <footer class="works-footer"><div class="works-shell"><a class="footer-name" href="index.html">张悦<span>从碎片到整体</span></a><div class="footer-links"><a href="contact.html">联系我 ↗</a><a href="#top">回到顶部 ↑</a></div></div></footer>
+
+  <section class="work-viewer" id="work-viewer" role="dialog" aria-modal="true" aria-labelledby="work-viewer-title" hidden>
+    <header class="work-viewer-bar">
+      <button class="work-viewer-back" id="work-viewer-back" type="button">返回作品页</button>
+      <h2 id="work-viewer-title">作品预览</h2>
+      <a class="work-viewer-external" id="work-viewer-external" href="#" target="_blank" rel="noopener noreferrer">在新窗口打开</a>
+    </header>
+    <div class="work-viewer-stage" id="work-viewer-stage"></div>
+  </section>
 </body>
 </html>

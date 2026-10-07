@@ -14,7 +14,11 @@ const optimizedMedia = path => {
 function linkMarkup(item, body, className = '') {
   if (!item.href) return `<div class="${className} is-static">${body}</div>`;
   const label = item.linkType === 'pdf' ? '查看 PDF' : item.linkType === 'media' ? '播放作品' : '查看作品';
-  return `<a class="${className} is-linked" href="${escapeHTML(optimizedMedia(item.href))}" target="_blank" rel="noopener noreferrer" aria-label="${label}：${escapeHTML(item.title)}">${body}<span class="view-cue">${label} <i aria-hidden="true">↗</i></span></a>`;
+  const opensNewTab = item.linkType === 'external' || /^(?:https?:)?\/\//i.test(item.href);
+  const attributes = opensNewTab
+    ? 'target="_blank" rel="noopener noreferrer"'
+    : `data-work-viewer data-work-title="${escapeHTML(item.title)}" data-work-type="${escapeHTML(item.linkType || 'external')}"`;
+  return `<a class="${className} is-linked" href="${escapeHTML(optimizedMedia(item.href))}" ${attributes} aria-label="${label}：${escapeHTML(item.title)}${opensNewTab ? '（在新标签页打开）' : ''}">${body}<span class="view-cue">${label} <i aria-hidden="true">↗</i></span></a>`;
 }
 
 function coverMarkup(work, categoryLabel) {
@@ -131,3 +135,95 @@ render();
 
 const linkedCategory = location.hash ? document.querySelector(location.hash) : null;
 if (linkedCategory) requestAnimationFrame(() => linkedCategory.scrollIntoView({block: 'start'}));
+
+const viewer = document.querySelector('#work-viewer');
+const viewerStage = document.querySelector('#work-viewer-stage');
+const viewerTitle = document.querySelector('#work-viewer-title');
+const viewerBack = document.querySelector('#work-viewer-back');
+const viewerExternal = document.querySelector('#work-viewer-external');
+let viewerTrigger = null;
+
+function setPageInert(isInert) {
+  document.querySelectorAll('body > :not(#work-viewer)').forEach(element => {
+    element.inert = isInert;
+  });
+}
+
+function openWorkViewer(link) {
+  const href = link.href;
+  const title = link.dataset.workTitle || '作品预览';
+  const type = link.dataset.workType;
+  viewerTrigger = link;
+  viewerTitle.textContent = title;
+  viewerExternal.href = href;
+  viewerStage.replaceChildren();
+
+  if (type === 'media') {
+    const video = document.createElement('video');
+    video.src = href;
+    video.controls = true;
+    video.autoplay = true;
+    video.playsInline = true;
+    video.preload = 'metadata';
+    video.setAttribute('aria-label', title);
+    viewerStage.append(video);
+  } else {
+    const frame = document.createElement('iframe');
+    frame.src = type === 'pdf' ? `${href.split('#')[0]}#view=Fit` : href;
+    frame.title = title;
+    frame.loading = 'eager';
+    frame.referrerPolicy = 'no-referrer-when-downgrade';
+    frame.setAttribute('allow', 'autoplay; fullscreen');
+    frame.setAttribute('allowfullscreen', '');
+    viewerStage.append(frame);
+  }
+
+  viewer.hidden = false;
+  document.body.classList.add('is-viewing-work');
+  setPageInert(true);
+  viewerBack.focus();
+}
+
+function closeWorkViewer() {
+  if (viewer.hidden) return;
+  const video = viewerStage.querySelector('video');
+  if (video) video.pause();
+  viewer.hidden = true;
+  viewerStage.replaceChildren();
+  document.body.classList.remove('is-viewing-work');
+  setPageInert(false);
+  if (viewerTrigger) viewerTrigger.focus({preventScroll: true});
+  viewerTrigger = null;
+}
+
+document.addEventListener('click', event => {
+  const link = event.target.closest('a[data-work-viewer]');
+  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  openWorkViewer(link);
+});
+
+viewerBack.addEventListener('pointerdown', event => {
+  event.preventDefault();
+  closeWorkViewer();
+});
+viewerBack.addEventListener('click', closeWorkViewer);
+document.addEventListener('keydown', event => {
+  if (viewer.hidden) return;
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    closeWorkViewer();
+    return;
+  }
+  if (event.key !== 'Tab') return;
+  const focusable = [...viewer.querySelectorAll('button, a[href], video[controls]')].filter(element => !element.hidden && element.tabIndex !== -1);
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+});
