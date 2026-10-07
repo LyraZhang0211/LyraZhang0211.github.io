@@ -22,7 +22,8 @@ body{font-family:var(--sans);font-size:16px;line-height:1.7}.wordmark strong,nav
 .hero-line-two{display:inline-block;margin-left:.5em}.button.is-disabled{cursor:not-allowed}.button.is-disabled:hover{background:var(--ink)}.button.is-disabled:hover span{transform:none}.collage-label{top:27%}.note-fragment p{font-size:clamp(21px,2.3vw,30px);line-height:1.35;margin:0;white-space:nowrap}.hero-divider{grid-column:1/-1;border-bottom:1px solid var(--line);margin-top:34px;align-self:end}
 .hero-identity,.hero-description{margin-left:2em}
 .hero-description-line-two{display:inline-block;margin-left:-2em}
-@media(max-width:760px){.collage-label{top:26%}.note-fragment p{font-size:22px}.hero-divider{margin-top:4px}}
+.decorative-spark svg{display:block;width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:3.2;stroke-linecap:round}
+@media(max-width:760px){.collage-label{top:9%}.note-fragment p{font-size:22px}.hero-divider{margin-top:4px}}
 @media(max-width:390px){.note-fragment p{font-size:18px}}
 /* Keep the compact note over the photo's lower-right caption. */
 .note-fragment{top:64%;right:2%;width:38%;aspect-ratio:5/4;display:flex;align-items:center;justify-content:center;text-align:center;z-index:2}
