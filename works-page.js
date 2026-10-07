@@ -157,6 +157,7 @@ const viewerTitle = document.querySelector('#work-viewer-title');
 const viewerBack = document.querySelector('#work-viewer-back');
 const viewerExternal = document.querySelector('#work-viewer-external');
 let viewerTrigger = null;
+let viewerScrollPosition = null;
 
 function setPageInert(isInert) {
   document.querySelectorAll('body > :not(#work-viewer)').forEach(element => {
@@ -169,6 +170,7 @@ function openWorkViewer(link) {
   const title = link.dataset.workTitle || '作品预览';
   const type = link.dataset.workType;
   viewerTrigger = link;
+  viewerScrollPosition = {left: window.scrollX, top: window.scrollY};
   viewerTitle.textContent = title;
   viewerExternal.href = href;
   viewerStage.replaceChildren();
@@ -225,7 +227,15 @@ function closeWorkViewer() {
   document.body.classList.remove('is-viewing-work');
   setPageInert(false);
   if (viewerTrigger) viewerTrigger.focus({preventScroll: true});
+  if (viewerScrollPosition) {
+    // Restore the list position without triggering the site's smooth scrolling.
+    const previousBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo(viewerScrollPosition);
+    document.documentElement.style.scrollBehavior = previousBehavior;
+  }
   viewerTrigger = null;
+  viewerScrollPosition = null;
 }
 
 document.addEventListener('click', event => {
@@ -235,11 +245,12 @@ document.addEventListener('click', event => {
   openWorkViewer(link);
 });
 
-viewerBack.addEventListener('pointerdown', event => {
+// Keep the viewer in place until release, so the gesture cannot hit a link below.
+viewerBack.addEventListener('click', event => {
   event.preventDefault();
+  event.stopPropagation();
   closeWorkViewer();
 });
-viewerBack.addEventListener('click', closeWorkViewer);
 document.addEventListener('keydown', event => {
   if (viewer.hidden) return;
   if (event.key === 'Escape') {
